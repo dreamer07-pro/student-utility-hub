@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Utility Hub</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f2f5f9;
+            color: #222;
+        }
+
+        header {
+            background: #1e3a8a;
+            color: white;
+            text-align: center;
+            padding: 25px 10px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #1e3a8a;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .result {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎓 Student Utility Hub</h1>
+    <p>Free tools for students</p>
+</header>
+
+<div class="container">
+
+    <!-- Percentage -->
+    <div class="card">
+        <h2>📊 Percentage Calculator</h2>
+
+        <input type="number" id="marks" placeholder="Enter marks obtained">
+        <input type="number" id="total" placeholder="Enter total marks">
+
+        <button onclick="calculatePercentage()">
+            Calculate Percentage
+        </button>
+
+        <div class="result" id="percentageResult"></div>
+    </div>
+
+    <!-- Attendance -->
+    <div class="card">
+        <h2>📚 Attendance Calculator</h2>
+
+        <input type="number" id="attended" placeholder="Classes attended">
+        <input type="number" id="conducted" placeholder="Total classes">
+
+        <button onclick="calculateAttendance()">
+            Calculate Attendance
+        </button>
+
+        <div class="result" id="attendanceResult"></div>
+    </div>
+
+    <!-- CGPA -->
+    <div class="card">
+        <h2>🎯 CGPA Calculator</h2>
+
+        <input type="number" id="cgpa" step="0.01"
+               placeholder="Enter CGPA">
+
+        <button onclick="calculateCGPA()">
+            Calculate Percentage
+        </button>
+
+        <div class="result" id="cgpaResult"></div>
+    </div>
+
+    <!-- Age -->
+    <div class="card">
+        <h2>🎂 Age Calculator</h2>
+
+        <input type="date" id="dob">
+
+        <button onclick="calculateAge()">
+            Calculate Age
+        </button>
+
+        <div class="result" id="ageResult"></div>
+    </div>
+
+</div>
+
+<footer>
+    © 2026 Student Utility Hub
+</footer>
+
+<script>
+
+function calculatePercentage() {
+
+    let marks = Number(document.getElementById("marks").value);
+    let total = Number(document.getElementById("total").value);
+
+    if (total <= 0 || marks < 0 || marks > total) {
+        document.getElementById("percentageResult").innerText =
+            "Please enter valid marks.";
+        return;
+    }
+
+    let percentage = (marks / total) * 100;
+
+    document.getElementById("percentageResult").innerText =
+        "Percentage: " + percentage.toFixed(2) + "%";
+}
+
+
+function calculateAttendance() {
+
+    let attended = Number(document.getElementById("attended").value);
+    let conducted = Number(document.getElementById("conducted").value);
+
+    if (conducted <= 0 || attended < 0 || attended > conducted) {
+        document.getElementById("attendanceResult").innerText =
+            "Please enter valid classes.";
+        return;
+    }
+
+    let attendance = (attended / conducted) * 100;
+
+    document.getElementById("attendanceResult").innerText =
+        "Attendance: " + attendance.toFixed(2) + "%";
+}
+
+
+function calculateCGPA() {
+
+    let cgpa = Number(document.getElementById("cgpa").value);
+
+    if (cgpa < 0 || cgpa > 10) {
+        document.getElementById("cgpaResult").innerText =
+            "Enter CGPA between 0 and 10.";
+        return;
+    }
+
+    let percentage = cgpa * 9.5;
+
+    document.getElementById("cgpaResult").innerText =
+        "Approx. Percentage: " + percentage.toFixed(2) + "%";
+}
+
+
+function calculateAge() {
+
+    let dob = document.getElementById("dob").value;
+
+    if (!dob) {
+        document.getElementById("ageResult").innerText =
+            "Please select your date of birth.";
+        return;
+    }
+
+    let birthDate = new Date(dob);
+    let today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    let month = today.getMonth() - birthDate.getMonth();
+
+    if (
+        month < 0 ||
+        (month === 0 && today.getDate() < birthDate.getDate())
+    ) {
+        age--;
+    }
+
+    document.getElementById("ageResult").innerText =
+        "Your Age: " + age + " years";
+}
+
+</script>
+
+</body>
+</html>
