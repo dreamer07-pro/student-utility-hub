@@ -3,1024 +3,1685 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Student Utility Hub</title>
-
+<meta name="description" content="Free student tools including CGPA, percentage, attendance, age, study timetable, Pomodoro timer, checklist and expense tracker.">
+<meta name="theme-color" content="#6366f1">
+<title>Student Utility Hub – Free Student Calculators & Study Tools</title>
 <style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-* {
-    box-sizing: border-box;
+:root {
+  --bg: #f4f6fb;
+  --card-bg: #ffffff;
+  --text: #1a1d29;
+  --text-secondary: #6b7280;
+  --border: #e5e7eb;
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-soft: rgba(99,102,241,0.12);
+  --accent: #ec4899;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --shadow: 0 4px 14px rgba(20, 20, 50, 0.06);
+  --shadow-lg: 0 14px 40px rgba(20, 20, 50, 0.14);
+  --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+  --input-bg: #f9fafb;
 }
+
+[data-theme="dark"] {
+  --bg: #0d1018;
+  --card-bg: #181c28;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border: #2a3045;
+  --primary: #818cf8;
+  --primary-dark: #6366f1;
+  --primary-soft: rgba(129,140,248,0.15);
+  --input-bg: #0f1320;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+
+html { scroll-behavior: smooth; }
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    color: #222;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* ==================== HEADER ==================== */
 header {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: white;
-    padding: 25px 20px;
-    text-align: center;
-    position: relative;
+  background: var(--gradient);
+  color: white;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.25);
 }
+
+.hamburger {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.hamburger:hover, .hamburger:focus { background: rgba(255,255,255,0.3); outline: none; }
 
 header h1 {
-    margin: 0;
-    font-size: 28px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+header p.subtitle {
+  font-size: 12px;
+  opacity: 0.92;
+  margin-top: 2px;
+  font-weight: 400;
 }
 
-header p {
-    margin: 8px 0 0;
+/* ==================== DRAWER ==================== */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.drawer-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-/* Menu Button */
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 82vw;
+  background: var(--card-bg);
+  z-index: 300;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.drawer.open { transform: translateX(0); }
 
-.menu-button {
-    position: absolute;
-    left: 15px;
-    top: 20px;
-    border: none;
-    background: transparent;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
+.drawer-header {
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--gradient);
+  color: white;
+}
+.drawer-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+.drawer-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 26px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 300;
+}
+.drawer-close:hover { opacity: 0.8; }
+
+.drawer-nav { padding: 8px 0; }
+.drawer-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.15s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+.drawer-nav a:hover, .drawer-nav a:focus { background: var(--input-bg); outline: none; }
+.drawer-nav a span.icon { font-size: 18px; }
+
+/* ==================== MAIN ==================== */
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
 }
 
-/* Sliding Menu */
-
-.menu {
-    position: fixed;
-    top: 0;
-    left: -290px;
-    width: 280px;
-    height: 100%;
-    background: white;
-    z-index: 1000;
-    box-shadow: 3px 0 15px rgba(0,0,0,0.2);
-    transition: 0.3s;
+.section {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 22px 20px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  transition: background 0.3s, border-color 0.3s;
+  scroll-margin-top: 80px;
+}
+.section h2 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section .desc {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 16px;
 }
 
-.menu.open {
-    left: 0;
+/* ==================== FORMS ==================== */
+.form-group { margin-bottom: 14px; }
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
 }
 
-.menu-header {
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: white;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    font-size: 20px;
-    font-weight: bold;
+input, select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 15px;
+  font-family: inherit;
+  transition: border 0.2s, box-shadow 0.2s, background 0.3s;
 }
-
-/* Simple white X */
-
-.close-button {
-    margin-left: auto;
-    border: none;
-    background: transparent;
-    color: white;
-    font-size: 28px;
-    font-weight: normal;
-    padding: 0 5px;
-    cursor: pointer;
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
 }
+input::placeholder { color: var(--text-secondary); opacity: 0.7; }
 
-.menu-items {
-    padding: 10px;
+/* ==================== BUTTONS ==================== */
+button { font-family: inherit; cursor: pointer; font-weight: 600; border: none; transition: transform 0.1s, background 0.2s, opacity 0.2s, border-color 0.2s; }
+button:active { transform: scale(0.97); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  padding: 13px 18px;
+  border-radius: 10px;
+  font-size: 15px;
+  width: 100%;
 }
+.btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
 
-.menu-items button {
-    width: 100%;
-    padding: 15px;
-    margin: 4px 0;
-    border: none;
-    background: white;
-    text-align: left;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
+.btn-secondary {
+  background: var(--input-bg);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
 }
+.btn-secondary:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
 
-.menu-items button:hover {
-    background: #f0f0f0;
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1.5px solid var(--danger);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
 }
+.btn-danger:hover:not(:disabled) { background: var(--danger); color: white; }
 
-/* Overlay */
-
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 999;
-    display: none;
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
 }
+.button-row button { flex: 1; min-width: 100px; }
 
-.overlay.show {
-    display: block;
+.btn-add {
+  background: var(--primary-soft);
+  color: var(--primary);
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 10px;
+  width: 100%;
 }
+.btn-add:hover { background: var(--primary); color: white; }
 
-/* Main */
-
-.container {
-    max-width: 700px;
-    margin: auto;
-    padding: 20px;
-}
-
-.card {
-    background: white;
-    margin: 20px 0;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-}
-
-.card h2 {
-    margin-top: 0;
-}
-
-/* Inputs */
-
-input,
-select {
-    width: 100%;
-    padding: 12px;
-    margin: 7px 0;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-}
-
-button.action {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 8px;
-    background: #6a11cb;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-button.action:hover {
-    opacity: 0.9;
-}
-
-/* Subject */
-
-.subject {
-    border: 1px solid #ddd;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 10px;
-}
-
-.remove-btn {
-    background: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 7px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* Result */
-
+/* ==================== RESULTS ==================== */
 .result {
-    margin-top: 15px;
-    padding: 12px;
-    background: #f1f1f1;
-    border-radius: 8px;
-    font-size: 18px;
+  background: var(--input-bg);
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 14px;
+  text-align: center;
+}
+.result-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500; }
+.result-value { font-size: 24px; font-weight: 700; color: var(--primary); word-break: break-word; }
+.result-sub { margin-top: 8px; font-size: 13px; color: var(--text-secondary); }
+
+.error-msg {
+  background: rgba(239,68,68,0.1);
+  color: var(--danger);
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-top: 12px;
+  text-align: center;
+  border: 1px solid rgba(239,68,68,0.2);
 }
 
-/* Dark Mode */
-
-body.dark {
-    background: #121212;
-    color: white;
+/* ==================== SUBJECT ROW ==================== */
+.subject-row {
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+.subject-row .row-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+.subject-row .row-fields > div { min-width: 0; }
+.subject-row .remove-subject {
+  align-self: end;
+  white-space: nowrap;
 }
 
-body.dark .card {
-    background: #1e1e1e;
+/* ==================== CALCULATOR ==================== */
+.calc-display {
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 22px 18px;
+  text-align: right;
+  font-size: 32px;
+  font-weight: 700;
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 14px;
 }
 
-body.dark .menu {
-    background: #1e1e1e;
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.calc-grid button {
+  aspect-ratio: 1;
+  font-size: 20px;
+  border-radius: 12px;
+  background: var(--input-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  min-height: 56px;
+}
+.calc-grid button:hover { background: var(--primary-soft); border-color: var(--primary); }
+.calc-grid button.op {
+  background: var(--primary-soft);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.calc-grid button.op:hover { background: var(--primary); color: white; }
+.calc-grid button.equals {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  grid-column: span 2;
+  aspect-ratio: auto;
+}
+.calc-grid button.equals:hover { background: var(--primary-dark); }
+.calc-grid button.clear {
+  background: rgba(239,68,68,0.1);
+  color: var(--danger);
+  border-color: rgba(239,68,68,0.3);
+}
+.calc-grid button.clear:hover { background: var(--danger); color: white; border-color: var(--danger); }
+.calc-grid button.wide { grid-column: span 2; aspect-ratio: auto; }
+
+/* ==================== CHECKLIST ==================== */
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  transition: opacity 0.2s;
+}
+.task-item.completed { opacity: 0.6; }
+.task-item.completed .task-text { text-decoration: line-through; }
+.task-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+  margin: 0;
+}
+.task-text { flex: 1; font-size: 15px; word-break: break-word; }
+.task-delete {
+  background: transparent;
+  color: var(--danger);
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 300;
+}
+.task-delete:hover { background: rgba(239,68,68,0.1); }
+
+.empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 20px;
+  font-size: 14px;
 }
 
-body.dark .menu-items button {
-    background: #1e1e1e;
-    color: white;
+/* ==================== EXPENSE ==================== */
+.expense-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.expense-info { flex: 1; min-width: 0; }
+.expense-name { font-weight: 600; font-size: 15px; word-break: break-word; }
+.expense-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.expense-amount { font-weight: 700; color: var(--primary); font-size: 16px; white-space: nowrap; }
+
+.category-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--input-bg);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+  border: 1px solid var(--border);
+}
+.category-name { font-weight: 500; }
+.category-amount { font-weight: 700; color: var(--primary); }
+
+/* ==================== TIMETABLE ==================== */
+.timetable-slot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.slot-time {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 13px;
+  min-width: 130px;
+  font-variant-numeric: tabular-nums;
+}
+.slot-subject { font-weight: 600; font-size: 15px; word-break: break-word; }
+.slot-break { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.4); }
+.slot-break .slot-subject { color: var(--warning); font-weight: 500; }
+.slot-break .slot-time { color: var(--warning); }
+
+.timetable-header { text-align: center; margin-bottom: 14px; font-weight: 600; font-size: 16px; }
+
+/* ==================== PROGRESS ==================== */
+.progress-bar {
+  background: var(--border);
+  border-radius: 10px;
+  height: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.progress-fill {
+  background: var(--gradient);
+  height: 100%;
+  transition: width 0.4s ease;
+  border-radius: 10px;
 }
 
-body.dark .menu-items button:hover {
-    background: #333;
+/* ==================== POMODORO ==================== */
+.pomodoro-display {
+  font-size: 64px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--primary);
+  margin: 24px 0 20px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+.pomodoro-mode {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
 }
 
-body.dark input,
-body.dark select {
-    background: #2b2b2b;
-    color: white;
-    border-color: #555;
+/* ==================== TIPS ==================== */
+.tip-card {
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.tip-title { font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; font-size: 15px; }
+.tip-text { color: var(--text-secondary); font-size: 14px; line-height: 1.55; }
+
+/* ==================== STATUS PILLS ==================== */
+.status-pill {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.status-excellent { background: rgba(16,185,129,0.15); color: var(--success); }
+.status-good { background: var(--primary-soft); color: var(--primary); }
+.status-warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+
+/* ==================== FOOTER ==================== */
+footer {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--border);
+  margin-top: 30px;
+  background: var(--card-bg);
+  transition: background 0.3s, border-color 0.3s;
+}
+footer h3 { color: var(--text); font-size: 16px; margin-bottom: 6px; font-weight: 700; }
+footer p { margin: 2px 0; }
+
+/* ==================== THEME TOGGLE ==================== */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 600;
+  font-family: inherit;
+  text-align: left;
+}
+.theme-toggle:hover { border-color: var(--primary); }
+
+.toggle-switch {
+  width: 44px;
+  height: 24px;
+  background: var(--border);
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle-switch::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.theme-toggle.on .toggle-switch { background: var(--primary); }
+.theme-toggle.on .toggle-switch::after { transform: translateX(20px); }
+
+/* ==================== NOTIFICATION ==================== */
+.notification {
+  position: fixed;
+  top: 84px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-30px);
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 14px 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  font-weight: 600;
+  font-size: 14px;
+  border-left: 4px solid var(--success);
+  max-width: 90vw;
+}
+.notification.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
-body.dark .result {
-    background: #2b2b2b;
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 520px) {
+  .subject-row .row-fields { grid-template-columns: 1fr 1fr; }
+  .subject-row .remove-subject { grid-column: span 2; }
+  .pomodoro-display { font-size: 54px; }
+  .calc-grid { gap: 8px; }
+  .calc-grid button { font-size: 18px; min-height: 52px; }
+  .calc-display { font-size: 26px; padding: 18px 14px; }
+  .slot-time { min-width: 105px; font-size: 12px; }
+  .section { padding: 18px 16px; }
+  header h1 { font-size: 17px; }
 }
 
-/* Mobile */
-
-@media (max-width: 600px) {
-
-    header h1 {
-        font-size: 22px;
-        padding-left: 35px;
-    }
-
-    header p {
-        font-size: 14px;
-    }
-
-    .container {
-        padding: 12px;
-    }
-
-    .card {
-        padding: 15px;
-    }
+@media (max-width: 380px) {
+  .button-row { flex-direction: column; }
+  .button-row button { width: 100%; }
 }
 
+/* ==================== PRINT ==================== */
+@media print {
+  body > *:not(main) { display: none !important; }
+  main > *:not(#timetable) { display: none !important; }
+  #timetable .form-group,
+  #timetable .button-row,
+  #timetable h2,
+  #timetable .desc { display: none !important; }
+  .section { box-shadow: none; border: 1px solid #ccc; background: white; }
+  body { background: white; color: black; }
+  .timetable-slot { border: 1px solid #ddd; background: white; color: black; }
+  .slot-time, .slot-subject { color: black; }
+  .slot-break { background: #f9f9f9; }
+}
 </style>
 </head>
-
 <body>
 
-<!-- Sliding Menu -->
-
-<div class="menu" id="menu">
-
-    <div class="menu-header">
-
-        <span>☰ Menu</span>
-
-        <button
-            class="close-button"
-            onclick="closeMenu()"
-        >×</button>
-
-    </div>
-
-    <div class="menu-items">
-
-        <button onclick="goToTool('cgpa')">
-            🎓 CGPA Calculator
-        </button>
-
-        <button onclick="goToTool('percentage')">
-            📊 Percentage Calculator
-        </button>
-
-        <button onclick="goToTool('attendance')">
-            📅 Attendance Calculator
-        </button>
-
-        <button onclick="goToTool('age')">
-            🎂 Age Calculator
-        </button>
-
-        <button onclick="goToTool('calculator')">
-            🧮 Simple Calculator
-        </button>
-
-        <button onclick="goToTool('tips')">
-            💡 Student Tips
-        </button>
-
-        <button onclick="toggleDark()">
-            🌙 Dark Mode
-        </button>
-
-    </div>
-
-</div>
-
-<div
-    class="overlay"
-    id="overlay"
-    onclick="closeMenu()"
-></div>
-
-
-<!-- Header -->
-
 <header>
-
-    <button
-        class="menu-button"
-        onclick="openMenu()"
-    >☰</button>
-
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu">☰</button>
+  <div>
     <h1>🎓 Student Utility Hub</h1>
-
-    <p>Free Tools for Students</p>
-
+    <p class="subtitle">Free Tools for Students</p>
+  </div>
 </header>
 
+<div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+<nav class="drawer" id="drawer" aria-label="Main navigation">
+  <div class="drawer-header">
+    <h2>Menu</h2>
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">×</button>
+  </div>
+  <div class="drawer-nav">
+    <a data-target="cgpa"><span class="icon">🎓</span> CGPA Calculator</a>
+    <a data-target="percentage"><span class="icon">📊</span> Percentage Calculator</a>
+    <a data-target="attendance"><span class="icon">📅</span> Attendance Calculator</a>
+    <a data-target="age"><span class="icon">🎂</span> Age Calculator</a>
+    <a data-target="calc"><span class="icon">🧮</span> Calculator</a>
+    <a data-target="timetable"><span class="icon">📚</span> Study Timetable</a>
+    <a data-target="pomodoro"><span class="icon">⏱️</span> Pomodoro Timer</a>
+    <a data-target="checklist"><span class="icon">📝</span> Study Checklist</a>
+    <a data-target="expense"><span class="icon">💰</span> Expense Tracker</a>
+    <a data-target="tips"><span class="icon">💡</span> Student Tips</a>
+    <a data-target="darkmode"><span class="icon">🌙</span> Dark Mode</a>
+  </div>
+</nav>
 
-<div class="container">
+<main>
 
-
-<!-- CGPA -->
-
-<div class="card" id="cgpa">
-
-    <h2>🎓 CGPA Calculator</h2>
-
-    <div id="subjects">
-
-        <div class="subject">
-
-            <label>Grade Point</label>
-
-            <input
-                type="number"
-                class="grade"
-                min="0"
-                max="10"
-                step="0.01"
-                placeholder="Example: 8.5"
-            >
-
-            <label>Credit</label>
-
-            <input
-                type="number"
-                class="credit"
-                min="0"
-                step="0.01"
-                placeholder="Example: 4"
-            >
-
-        </div>
-
+  <!-- ==================== CGPA ==================== -->
+  <section id="cgpa" class="section" aria-labelledby="cgpa-title">
+    <h2 id="cgpa-title">🎓 CGPA Calculator</h2>
+    <p class="desc">Calculate your CGPA based on grade points and credits.</p>
+    <div id="cgpaSubjects"></div>
+    <button class="btn-add" id="addSubjectBtn" type="button">➕ Add Subject</button>
+    <div class="button-row">
+      <button class="btn-primary" id="calcCgpaBtn" type="button">Calculate CGPA</button>
+      <button class="btn-secondary" id="resetCgpaBtn" type="button">Reset</button>
     </div>
+    <div id="cgpaResult" aria-live="polite"></div>
+  </section>
 
-    <button
-        class="action"
-        onclick="addSubject()"
-    >
-        ➕ Add Subject
+  <!-- ==================== PERCENTAGE ==================== -->
+  <section id="percentage" class="section" aria-labelledby="percentage-title">
+    <h2 id="percentage-title">📊 Percentage Calculator</h2>
+    <p class="desc">Calculate percentage from obtained and total marks.</p>
+    <div class="form-group">
+      <label for="marksObtained">Marks Obtained</label>
+      <input type="number" id="marksObtained" min="0" step="any" placeholder="Enter marks obtained" inputmode="decimal">
+    </div>
+    <div class="form-group">
+      <label for="totalMarks">Total Marks</label>
+      <input type="number" id="totalMarks" min="0" step="any" placeholder="Enter total marks" inputmode="decimal">
+    </div>
+    <button class="btn-primary" id="calcPercentageBtn" type="button">Calculate Percentage</button>
+    <div id="percentageResult" aria-live="polite"></div>
+  </section>
+
+  <!-- ==================== ATTENDANCE ==================== -->
+  <section id="attendance" class="section" aria-labelledby="attendance-title">
+    <h2 id="attendance-title">📅 Attendance Calculator</h2>
+    <p class="desc">Track your attendance percentage.</p>
+    <div class="form-group">
+      <label for="attended">Classes Attended</label>
+      <input type="number" id="attended" min="0" step="any" placeholder="Enter attended classes" inputmode="numeric">
+    </div>
+    <div class="form-group">
+      <label for="totalClasses">Total Classes</label>
+      <input type="number" id="totalClasses" min="0" step="any" placeholder="Enter total classes" inputmode="numeric">
+    </div>
+    <button class="btn-primary" id="calcAttendanceBtn" type="button">Calculate Attendance</button>
+    <div id="attendanceResult" aria-live="polite"></div>
+  </section>
+
+  <!-- ==================== AGE ==================== -->
+  <section id="age" class="section" aria-labelledby="age-title">
+    <h2 id="age-title">🎂 Age Calculator</h2>
+    <p class="desc">Calculate your age from your date of birth.</p>
+    <div class="form-group">
+      <label for="dob">Date of Birth</label>
+      <input type="date" id="dob">
+    </div>
+    <button class="btn-primary" id="calcAgeBtn" type="button">Calculate Age</button>
+    <div id="ageResult" aria-live="polite"></div>
+  </section>
+
+  <!-- ==================== SIMPLE CALCULATOR ==================== -->
+  <section id="calc" class="section" aria-labelledby="calc-title">
+    <h2 id="calc-title">🧮 Calculator</h2>
+    <p class="desc">A simple calculator for quick math.</p>
+    <div class="calc-display" id="calcDisplay" aria-live="polite">0</div>
+    <div class="calc-grid">
+      <button class="clear" data-action="clear" type="button">C</button>
+      <button data-action="backspace" type="button" aria-label="Backspace">⌫</button>
+      <button data-action="percent" type="button">%</button>
+      <button class="op" data-action="operator" data-value="/" type="button">÷</button>
+      <button data-action="number" data-value="7" type="button">7</button>
+      <button data-action="number" data-value="8" type="button">8</button>
+      <button data-action="number" data-value="9" type="button">9</button>
+      <button class="op" data-action="operator" data-value="*" type="button">×</button>
+      <button data-action="number" data-value="4" type="button">4</button>
+      <button data-action="number" data-value="5" type="button">5</button>
+      <button data-action="number" data-value="6" type="button">6</button>
+      <button class="op" data-action="operator" data-value="-" type="button">−</button>
+      <button data-action="number" data-value="1" type="button">1</button>
+      <button data-action="number" data-value="2" type="button">2</button>
+      <button data-action="number" data-value="3" type="button">3</button>
+      <button class="op" data-action="operator" data-value="+" type="button">+</button>
+      <button data-action="number" data-value="0" type="button">0</button>
+      <button data-action="decimal" type="button">.</button>
+      <button class="equals" data-action="equals" type="button">=</button>
+    </div>
+  </section>
+
+  <!-- ==================== TIMETABLE ==================== -->
+  <section id="timetable" class="section" aria-labelledby="timetable-title">
+    <h2 id="timetable-title">📚 Study Timetable</h2>
+    <p class="desc">Generate a balanced study timetable automatically.</p>
+    <div class="form-group">
+      <label for="ttName">Student Name (optional)</label>
+      <input type="text" id="ttName" placeholder="Your name">
+    </div>
+    <div class="form-group">
+      <label for="ttHours">Available Study Hours</label>
+      <input type="number" id="ttHours" min="1" max="12" value="3" step="1" inputmode="numeric">
+    </div>
+    <div class="form-group">
+      <label for="ttStart">Preferred Start Time</label>
+      <input type="time" id="ttStart" value="18:00">
+    </div>
+    <div class="form-group">
+      <label for="ttBreak">Break Duration (minutes)</label>
+      <input type="number" id="ttBreak" min="0" max="60" value="10" step="1" inputmode="numeric">
+    </div>
+    <div>
+      <label>Subjects</label>
+      <div id="ttSubjects"></div>
+      <button class="btn-add" id="addTtSubjectBtn" type="button">➕ Add Subject</button>
+    </div>
+    <div class="button-row">
+      <button class="btn-primary" id="generateTtBtn" type="button">Generate Timetable</button>
+      <button class="btn-secondary" id="resetTtBtn" type="button">Reset</button>
+      <button class="btn-secondary" id="printTtBtn" type="button">🖨️ Print</button>
+    </div>
+    <div id="ttResult" aria-live="polite"></div>
+  </section>
+
+  <!-- ==================== POMODORO ==================== -->
+  <section id="pomodoro" class="section" aria-labelledby="pomodoro-title">
+    <h2 id="pomodoro-title">⏱️ Pomodoro Timer</h2>
+    <p class="desc">Stay focused with 25-minute study sessions and 5-minute breaks.</p>
+    <div class="pomodoro-mode" id="pomodoroMode">Study Time</div>
+    <div class="pomodoro-display" id="pomodoroDisplay" aria-live="polite">25:00</div>
+    <div class="button-row">
+      <button class="btn-primary" id="pomodoroStartBtn" type="button">Start</button>
+      <button class="btn-secondary" id="pomodoroPauseBtn" type="button">Pause</button>
+      <button class="btn-secondary" id="pomodoroResetBtn" type="button">Reset</button>
+    </div>
+  </section>
+
+  <!-- ==================== CHECKLIST ==================== -->
+  <section id="checklist" class="section" aria-labelledby="checklist-title">
+    <h2 id="checklist-title">📝 Study Checklist</h2>
+    <p class="desc">Track your study tasks and progress.</p>
+    <div class="form-group" style="display: flex; gap: 8px;">
+      <input type="text" id="taskInput" placeholder="Add a subject, unit or task..." style="flex: 1;" maxlength="200">
+      <button class="btn-primary" id="addTaskBtn" type="button" style="width: auto; padding: 12px 20px;">Add</button>
+    </div>
+    <div id="taskList"></div>
+    <div class="result" id="checklistProgress" style="display: none;">
+      <div class="result-label">Your Progress</div>
+      <div class="result-value" id="progressValue">0%</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
+    </div>
+  </section>
+
+  <!-- ==================== EXPENSE TRACKER ==================== -->
+  <section id="expense" class="section" aria-labelledby="expense-title">
+    <h2 id="expense-title">💰 Expense Tracker</h2>
+    <p class="desc">Track your daily expenses by category.</p>
+    <div class="form-group">
+      <label for="expenseName">Expense Name</label>
+      <input type="text" id="expenseName" placeholder="e.g., Lunch" maxlength="80">
+    </div>
+    <div class="form-group">
+      <label for="expenseAmount">Amount</label>
+      <input type="number" id="expenseAmount" min="0" step="0.01" placeholder="0.00" inputmode="decimal">
+    </div>
+    <div class="form-group">
+      <label for="expenseCategory">Category</label>
+      <select id="expenseCategory">
+        <option value="Food">Food</option>
+        <option value="Travel">Travel</option>
+        <option value="Education">Education</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <button class="btn-primary" id="addExpenseBtn" type="button">Add Expense</button>
+    <div id="expenseList" style="margin-top: 16px;"></div>
+    <div id="expenseSummary" style="margin-top: 16px;"></div>
+  </section>
+
+  <!-- ==================== TIPS ==================== -->
+  <section id="tips" class="section" aria-labelledby="tips-title">
+    <h2 id="tips-title">💡 Student Tips</h2>
+    <p class="desc">Practical tips to help you succeed in college and school.</p>
+
+    <div class="tip-card">
+      <div class="tip-title">📖 Study Habits</div>
+      <div class="tip-text">Study in focused blocks of 25–50 minutes with short breaks. Active recall and spaced repetition beat re-reading notes every time.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">📝 Exam Preparation</div>
+      <div class="tip-text">Start revising at least two weeks before exams. Solve previous year papers and mock tests under timed conditions.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">⏰ Time Management</div>
+      <div class="tip-text">Plan your day the night before. Use a single to-do list and tackle the hardest task first thing in the morning.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">💻 Programming Practice</div>
+      <div class="tip-text">Code a little every day. Build small projects instead of only watching tutorials. Read other people's code on GitHub.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">📄 Resume Preparation</div>
+      <div class="tip-text">Keep it one page. Quantify achievements (e.g., "Improved load time by 30%"). Tailor it for every role you apply to.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">🎤 Interview Preparation</div>
+      <div class="tip-text">Practice explaining your projects out loud. Prepare STAR-format answers (Situation, Task, Action, Result) for behavioral questions.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">😴 Sleep and Rest</div>
+      <div class="tip-text">Aim for 7–8 hours of sleep. A rested brain remembers more and learns faster than one fueled by caffeine and all-nighters.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-title">🚫 Avoiding Procrastination</div>
+      <div class="tip-text">Use the 2-minute rule: if a task takes less than 2 minutes, do it now. Break big tasks into tiny, less scary steps.</div>
+    </div>
+  </section>
+
+  <!-- ==================== DARK MODE ==================== -->
+  <section id="darkmode" class="section" aria-labelledby="darkmode-title">
+    <h2 id="darkmode-title">🌙 Dark Mode</h2>
+    <p class="desc">Toggle between light and dark themes. Your preference is saved.</p>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">
+      <span id="themeToggleLabel">Dark Mode</span>
+      <span class="toggle-switch" aria-hidden="true"></span>
     </button>
+  </section>
 
-    <button
-        class="action"
-        onclick="calculateCGPA()"
-    >
-        Calculate CGPA
-    </button>
+</main>
 
-    <div
-        class="result"
-        id="cgpaResult"
-    ></div>
+<footer>
+  <h3>🎓 Student Utility Hub</h3>
+  <p>Free tools made for students.</p>
+  <p style="margin-top: 10px;">© 2026 Student Utility Hub</p>
+</footer>
 
-</div>
-
-
-<!-- Percentage -->
-
-<div class="card" id="percentage">
-
-    <h2>📊 Percentage Calculator</h2>
-
-    <input
-        type="number"
-        id="obtained"
-        placeholder="Marks Obtained"
-    >
-
-    <input
-        type="number"
-        id="total"
-        placeholder="Total Marks"
-    >
-
-    <button
-        class="action"
-        onclick="calculatePercentage()"
-    >
-        Calculate Percentage
-    </button>
-
-    <div
-        class="result"
-        id="percentageResult"
-    ></div>
-
-</div>
-
-
-<!-- Attendance -->
-
-<div class="card" id="attendance">
-
-    <h2>📅 Attendance Calculator</h2>
-
-    <input
-        type="number"
-        id="attended"
-        placeholder="Classes Attended"
-    >
-
-    <input
-        type="number"
-        id="conducted"
-        placeholder="Total Classes"
-    >
-
-    <button
-        class="action"
-        onclick="calculateAttendance()"
-    >
-        Calculate Attendance
-    </button>
-
-    <div
-        class="result"
-        id="attendanceResult"
-    ></div>
-
-</div>
-
-
-<!-- Age -->
-
-<div class="card" id="age">
-
-    <h2>🎂 Age Calculator</h2>
-
-    <label>Date of Birth</label>
-
-    <input
-        type="date"
-        id="dob"
-    >
-
-    <button
-        class="action"
-        onclick="calculateAge()"
-    >
-        Calculate Age
-    </button>
-
-    <div
-        class="result"
-        id="ageResult"
-    ></div>
-
-</div>
-
-
-<!-- Simple Calculator -->
-
-<div class="card" id="calculator">
-
-    <h2>🧮 Simple Calculator</h2>
-
-    <input
-        type="number"
-        id="num1"
-        placeholder="First Number"
-    >
-
-    <input
-        type="number"
-        id="num2"
-        placeholder="Second Number"
-    >
-
-    <button
-        class="action"
-        onclick="calculate('+')"
-    >
-        ➕ Add
-    </button>
-
-    <button
-        class="action"
-        onclick="calculate('-')"
-    >
-        ➖ Subtract
-    </button>
-
-    <button
-        class="action"
-        onclick="calculate('*')"
-    >
-        ✖️ Multiply
-    </button>
-
-    <button
-        class="action"
-        onclick="calculate('/')"
-    >
-        ➗ Divide
-    </button>
-
-    <div
-        class="result"
-        id="calcResult"
-    ></div>
-
-</div>
-
-
-<!-- Tips -->
-
-<div class="card" id="tips">
-
-    <h2>💡 Student Tips</h2>
-
-    <ul>
-
-        <li>📚 Study consistently every day.</li>
-
-        <li>⏰ Make a simple study timetable.</li>
-
-        <li>📝 Practice previous year questions.</li>
-
-        <li>💻 Improve your programming skills.</li>
-
-        <li>😴 Get enough rest before exams.</li>
-
-    </ul>
-
-</div>
-
-
-</div>
-
+<div class="notification" id="notification" role="status" aria-live="polite"></div>
 
 <script>
+(function () {
+  'use strict';
 
-/* Menu */
+  // ==================== UTILITIES ====================
+  const $ = (id) => document.getElementById(id);
 
-function openMenu() {
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
 
-    document
-        .getElementById("menu")
-        .classList
-        .add("open");
+  function showError(container, message) {
+    container.innerHTML = '<div class="error-msg">⚠️ ' + message + '</div>';
+  }
 
-    document
-        .getElementById("overlay")
-        .classList
-        .add("show");
-}
+  function showResult(container, label, value, extra) {
+    container.innerHTML =
+      '<div class="result">' +
+        '<div class="result-label">' + label + '</div>' +
+        '<div class="result-value">' + value + '</div>' +
+        (extra || '') +
+      '</div>';
+  }
 
+  // Notification
+  const notification = $('notification');
+  let notifTimer = null;
+  function showNotification(message) {
+    notification.textContent = message;
+    notification.classList.add('show');
+    if (notifTimer) clearTimeout(notifTimer);
+    notifTimer = setTimeout(function () {
+      notification.classList.remove('show');
+    }, 3500);
+  }
 
-function closeMenu() {
+  // ==================== DRAWER ====================
+  const hamburger = $('hamburgerBtn');
+  const drawer = $('drawer');
+  const overlay = $('drawerOverlay');
+  const drawerClose = $('drawerClose');
 
-    document
-        .getElementById("menu")
-        .classList
-        .remove("open");
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+  hamburger.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
+  });
 
-    document
-        .getElementById("overlay")
-        .classList
-        .remove("show");
-}
+  document.querySelectorAll('.drawer-nav a').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      const targetId = link.getAttribute('data-target');
+      closeDrawer();
+      const target = $(targetId);
+      if (target) {
+        setTimeout(function () {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 280);
+      }
+    });
+  });
 
+  // ==================== THEME ====================
+  const themeToggle = $('themeToggle');
+  const themeToggleLabel = $('themeToggleLabel');
 
-function goToTool(id) {
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const isDark = theme === 'dark';
+    themeToggle.classList.toggle('on', isDark);
+    themeToggle.setAttribute('aria-pressed', String(isDark));
+    themeToggleLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    try { localStorage.setItem('suh_theme', theme); } catch (e) {}
+  }
 
-    closeMenu();
+  themeToggle.addEventListener('click', function () {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  });
 
-    setTimeout(function() {
+  let savedTheme = 'light';
+  try { savedTheme = localStorage.getItem('suh_theme') || 'light'; } catch (e) {}
+  applyTheme(savedTheme);
 
-        document
-            .getElementById(id)
-            .scrollIntoView({
-                behavior: "smooth"
-            });
+  // ==================== CGPA ====================
+  const cgpaSubjects = $('cgpaSubjects');
+  const cgpaResult = $('cgpaResult');
 
-    }, 200);
-}
+  function addCgpaSubject() {
+    const div = document.createElement('div');
+    div.className = 'subject-row';
+    div.innerHTML =
+      '<div class="row-fields">' +
+        '<div>' +
+          '<label>Grade Point (0-10)</label>' +
+          '<input type="number" class="cgpa-gp" min="0" max="10" step="0.01" placeholder="0-10" inputmode="decimal">' +
+        '</div>' +
+        '<div>' +
+          '<label>Credit</label>' +
+          '<input type="number" class="cgpa-credit" min="0" step="0.01" placeholder="0" inputmode="decimal">' +
+        '</div>' +
+        '<button class="btn-danger remove-subject" type="button">Remove</button>' +
+      '</div>';
+    div.querySelector('.remove-subject').addEventListener('click', function () {
+      div.remove();
+    });
+    cgpaSubjects.appendChild(div);
+  }
 
+  $('addSubjectBtn').addEventListener('click', addCgpaSubject);
+  addCgpaSubject();
 
-/* CGPA */
-
-function addSubject() {
-
-    const subjects =
-        document.getElementById("subjects");
-
-    const div =
-        document.createElement("div");
-
-    div.className = "subject";
-
-    div.innerHTML = `
-
-        <label>Grade Point</label>
-
-        <input
-            type="number"
-            class="grade"
-            min="0"
-            max="10"
-            step="0.01"
-            placeholder="Example: 8.5"
-        >
-
-        <label>Credit</label>
-
-        <input
-            type="number"
-            class="credit"
-            min="0"
-            step="0.01"
-            placeholder="Example: 4"
-        >
-
-        <button
-            class="remove-btn"
-            onclick="this.parentElement.remove()"
-        >
-            Remove
-        </button>
-
-    `;
-
-    subjects.appendChild(div);
-}
-
-
-function calculateCGPA() {
-
-    const grades =
-        document.querySelectorAll(".grade");
-
-    const credits =
-        document.querySelectorAll(".credit");
-
-    let totalWeightedPoints = 0;
-
+  $('calcCgpaBtn').addEventListener('click', function () {
+    const rows = cgpaSubjects.querySelectorAll('.subject-row');
+    if (rows.length === 0) {
+      showError(cgpaResult, 'Please add at least one subject.');
+      return;
+    }
     let totalCredits = 0;
-
-
-    for (
-        let i = 0;
-        i < grades.length;
-        i++
-    ) {
-
-        const grade =
-            parseFloat(grades[i].value);
-
-        const credit =
-            parseFloat(credits[i].value);
-
-
-        if (
-            isNaN(grade) ||
-            isNaN(credit)
-        ) {
-
-            document.getElementById(
-                "cgpaResult"
-            ).innerHTML =
-                "⚠️ Please enter Grade Point and Credit for every subject.";
-
-            return;
-        }
-
-
-        if (
-            grade < 0 ||
-            grade > 10
-        ) {
-
-            document.getElementById(
-                "cgpaResult"
-            ).innerHTML =
-                "⚠️ Grade Point must be between 0 and 10.";
-
-            return;
-        }
-
-
-        if (credit < 0) {
-
-            document.getElementById(
-                "cgpaResult"
-            ).innerHTML =
-                "⚠️ Credit cannot be negative.";
-
-            return;
-        }
-
-
-        totalWeightedPoints +=
-            grade * credit;
-
-        totalCredits +=
-            credit;
-
-    }
-
-
+    let weightedSum = 0;
+    let hasError = false;
+    rows.forEach(function (row, i) {
+      if (hasError) return;
+      const gpVal = row.querySelector('.cgpa-gp').value.trim();
+      const crVal = row.querySelector('.cgpa-credit').value.trim();
+      if (gpVal === '' || crVal === '') {
+        showError(cgpaResult, 'Please fill in grade point and credit for subject ' + (i + 1) + '.');
+        hasError = true;
+        return;
+      }
+      const gp = parseFloat(gpVal);
+      const cr = parseFloat(crVal);
+      if (isNaN(gp) || isNaN(cr) || gp < 0 || cr < 0 || gp > 10) {
+        showError(cgpaResult, 'Invalid values in subject ' + (i + 1) + '. Grade point must be 0–10 and credit must be ≥ 0.');
+        hasError = true;
+        return;
+      }
+      totalCredits += cr;
+      weightedSum += gp * cr;
+    });
+    if (hasError) return;
     if (totalCredits === 0) {
-
-        document.getElementById(
-            "cgpaResult"
-        ).innerHTML =
-            "⚠️ Total credits are 0. Enter at least one subject with credit greater than 0.";
-
-        return;
+      showError(cgpaResult, 'Total credits cannot be zero. Please enter valid credits to calculate CGPA.');
+      return;
     }
+    const cgpa = weightedSum / totalCredits;
+    showResult(cgpaResult, 'Your CGPA', cgpa.toFixed(2),
+      '<div class="result-sub">Total Credits: ' + totalCredits + '</div>');
+  });
 
+  $('resetCgpaBtn').addEventListener('click', function () {
+    cgpaSubjects.innerHTML = '';
+    addCgpaSubject();
+    cgpaResult.innerHTML = '';
+  });
 
-    const cgpa =
-        totalWeightedPoints /
-        totalCredits;
-
-
-    document.getElementById(
-        "cgpaResult"
-    ).innerHTML =
-
-        "🎓 Your CGPA: <strong>" +
-        cgpa.toFixed(2) +
-        "</strong><br>" +
-
-        "📚 Total Credits: " +
-        totalCredits.toFixed(2);
-
-}
-
-
-/* Percentage */
-
-function calculatePercentage() {
-
-    const obtained =
-        parseFloat(
-            document.getElementById(
-                "obtained"
-            ).value
-        );
-
-    const total =
-        parseFloat(
-            document.getElementById(
-                "total"
-            ).value
-        );
-
-
-    if (
-        isNaN(obtained) ||
-        isNaN(total) ||
-        total <= 0 ||
-        obtained < 0
-    ) {
-
-        document.getElementById(
-            "percentageResult"
-        ).innerHTML =
-            "⚠️ Enter valid marks.";
-
-        return;
+  // ==================== PERCENTAGE ====================
+  $('calcPercentageBtn').addEventListener('click', function () {
+    const obtained = parseFloat($('marksObtained').value);
+    const total = parseFloat($('totalMarks').value);
+    const result = $('percentageResult');
+    if (isNaN(obtained) || isNaN(total) || obtained < 0 || total <= 0) {
+      showError(result, 'Please enter valid values. Total marks must be greater than zero.');
+      return;
     }
-
-
-    const percentage =
-        (obtained / total) * 100;
-
-
-    document.getElementById(
-        "percentageResult"
-    ).innerHTML =
-        "📊 Percentage: <strong>" +
-        percentage.toFixed(2) +
-        "%</strong>";
-
-}
-
-
-/* Attendance */
-
-function calculateAttendance() {
-
-    const attended =
-        parseFloat(
-            document.getElementById(
-                "attended"
-            ).value
-        );
-
-    const conducted =
-        parseFloat(
-            document.getElementById(
-                "conducted"
-            ).value
-        );
-
-
-    if (
-        isNaN(attended) ||
-        isNaN(conducted) ||
-        conducted <= 0 ||
-        attended < 0 ||
-        attended > conducted
-    ) {
-
-        document.getElementById(
-            "attendanceResult"
-        ).innerHTML =
-            "⚠️ Enter valid attendance values.";
-
-        return;
+    if (obtained > total) {
+      showError(result, 'Obtained marks cannot exceed total marks.');
+      return;
     }
+    const pct = (obtained / total) * 100;
+    showResult(result, 'Your Percentage', pct.toFixed(2) + '%');
+  });
 
-
-    const percentage =
-        (attended / conducted) * 100;
-
-
-    document.getElementById(
-        "attendanceResult"
-    ).innerHTML =
-        "📅 Attendance: <strong>" +
-        percentage.toFixed(2) +
-        "%</strong>";
-
-}
-
-
-/* Age */
-
-function calculateAge() {
-
-    const dob =
-        document.getElementById(
-            "dob"
-        ).value;
-
-    if (!dob) {
-
-        document.getElementById(
-            "ageResult"
-        ).innerHTML =
-            "⚠️ Please select your date of birth.";
-
-        return;
+  // ==================== ATTENDANCE ====================
+  $('calcAttendanceBtn').addEventListener('click', function () {
+    const attended = parseFloat($('attended').value);
+    const total = parseFloat($('totalClasses').value);
+    const result = $('attendanceResult');
+    if (isNaN(attended) || isNaN(total) || attended < 0 || total <= 0) {
+      showError(result, 'Please enter valid values. Total classes must be greater than zero.');
+      return;
     }
-
-
-    const birthDate =
-        new Date(dob);
-
-    const today =
-        new Date();
-
-
-    let age =
-        today.getFullYear() -
-        birthDate.getFullYear();
-
-
-    const month =
-        today.getMonth() -
-        birthDate.getMonth();
-
-
-    if (
-        month < 0 ||
-        (
-            month === 0 &&
-            today.getDate() <
-            birthDate.getDate()
-        )
-    ) {
-
-        age--;
-
+    if (attended > total) {
+      showError(result, 'Attended classes cannot exceed total classes.');
+      return;
     }
-
-
-    document.getElementById(
-        "ageResult"
-    ).innerHTML =
-        "🎂 Your Age: <strong>" +
-        age +
-        " years</strong>";
-
-}
-
-
-/* Calculator */
-
-function calculate(operator) {
-
-    const num1 =
-        parseFloat(
-            document.getElementById(
-                "num1"
-            ).value
-        );
-
-    const num2 =
-        parseFloat(
-            document.getElementById(
-                "num2"
-            ).value
-        );
-
-
-    if (
-        isNaN(num1) ||
-        isNaN(num2)
-    ) {
-
-        document.getElementById(
-            "calcResult"
-        ).innerHTML =
-            "⚠️ Enter both numbers.";
-
-        return;
+    const pct = (attended / total) * 100;
+    let status = '';
+    let statusClass = '';
+    if (pct >= 90) {
+      status = 'Excellent'; statusClass = 'status-excellent';
+    } else if (pct >= 75) {
+      status = 'Good'; statusClass = 'status-good';
+    } else {
+      status = 'Needs Attention'; statusClass = 'status-warning';
     }
+    showResult(result, 'Your Attendance', pct.toFixed(2) + '%',
+      '<div class="result-sub"><span class="status-pill ' + statusClass + '">' + status + '</span></div>');
+  });
 
-
-    let result;
-
-
-    if (operator === "+") {
-
-        result = num1 + num2;
-
+  // ==================== AGE ====================
+  $('calcAgeBtn').addEventListener('click', function () {
+    const dobVal = $('dob').value;
+    const result = $('ageResult');
+    if (!dobVal) {
+      showError(result, 'Please select your date of birth.');
+      return;
     }
-
-    else if (operator === "-") {
-
-        result = num1 - num2;
-
+    const birthDate = new Date(dobVal);
+    const today = new Date();
+    if (isNaN(birthDate.getTime())) {
+      showError(result, 'Please enter a valid date.');
+      return;
     }
-
-    else if (operator === "*") {
-
-        result = num1 * num2;
-
+    if (birthDate > today) {
+      showError(result, 'Date of birth cannot be in the future.');
+      return;
     }
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+    let days = today.getDate() - birthDate.getDate();
+    if (days < 0) {
+      months--;
+      const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += lastMonth.getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    showResult(result, 'Your Age', years + ' years, ' + months + ' months, ' + days + ' days');
+  });
 
-    else if (operator === "/") {
+  // ==================== SIMPLE CALCULATOR ====================
+  const calcDisplay = $('calcDisplay');
+  let calcCurrent = '0';
+  let calcPrevious = '';
+  let calcOperator = '';
+  let calcReset = false;
 
-        if (num2 === 0) {
+  function updateCalcDisplay() {
+    let val = calcCurrent;
+    if (val.length > 14 && !isNaN(parseFloat(val))) {
+      const n = parseFloat(val);
+      if (Math.abs(n) > 1e12 || (Math.abs(n) < 1e-6 && n !== 0)) {
+        val = n.toExponential(6);
+      } else {
+        val = n.toString();
+      }
+    }
+    calcDisplay.textContent = val;
+  }
 
-            document.getElementById(
-                "calcResult"
-            ).innerHTML =
-                "⚠️ Cannot divide by zero.";
+  function calcCompute(a, b, op) {
+    a = parseFloat(a);
+    b = parseFloat(b);
+    if (isNaN(a) || isNaN(b)) return 'Error';
+    if (op === '+') return a + b;
+    if (op === '-') return a - b;
+    if (op === '*') return a * b;
+    if (op === '/') {
+      if (b === 0) return 'Error';
+      return a / b;
+    }
+    if (op === '%') return a % b;
+    return b;
+  }
 
-            return;
+  function calcClearAll() {
+    calcCurrent = '0';
+    calcPrevious = '';
+    calcOperator = '';
+    calcReset = false;
+  }
+
+  document.querySelectorAll('.calc-grid button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const action = btn.getAttribute('data-action');
+      const value = btn.getAttribute('data-value');
+
+      if (action === 'number') {
+        if (calcCurrent === 'Error' || calcCurrent === '0' || calcReset) {
+          calcCurrent = value;
+          calcReset = false;
+        } else {
+          calcCurrent += value;
         }
+      } else if (action === 'decimal') {
+        if (calcCurrent === 'Error' || calcReset) {
+          calcCurrent = '0.';
+          calcReset = false;
+        } else if (!calcCurrent.includes('.')) {
+          calcCurrent += '.';
+        }
+      } else if (action === 'operator') {
+        if (calcOperator && !calcReset) {
+          const r = calcCompute(calcPrevious, calcCurrent, calcOperator);
+          if (r === 'Error') {
+            calcCurrent = 'Error';
+            calcOperator = '';
+            calcPrevious = '';
+            calcReset = true;
+            updateCalcDisplay();
+            return;
+          }
+          calcCurrent = String(r);
+        }
+        calcPrevious = calcCurrent;
+        calcOperator = value;
+        calcReset = true;
+      } else if (action === 'equals') {
+        if (calcOperator && calcPrevious !== '') {
+          const r = calcCompute(calcPrevious, calcCurrent, calcOperator);
+          if (r === 'Error') {
+            calcCurrent = 'Error';
+          } else {
+            calcCurrent = String(parseFloat(r.toFixed(10)));
+          }
+          calcOperator = '';
+          calcPrevious = '';
+          calcReset = true;
+        }
+      } else if (action === 'clear') {
+        calcClearAll();
+      } else if (action === 'backspace') {
+        if (calcReset || calcCurrent === 'Error') {
+          calcCurrent = '0';
+          calcReset = false;
+        } else if (calcCurrent.length === 1) {
+          calcCurrent = '0';
+        } else {
+          calcCurrent = calcCurrent.slice(0, -1);
+        }
+      } else if (action === 'percent') {
+        const n = parseFloat(calcCurrent);
+        if (!isNaN(n)) {
+          calcCurrent = String(n / 100);
+          calcReset = true;
+        }
+      }
+      updateCalcDisplay();
+    });
+  });
+  updateCalcDisplay();
 
-        result = num1 / num2;
+  // ==================== TIMETABLE ====================
+  const ttSubjects = $('ttSubjects');
 
+  function addTtSubject(name) {
+    const div = document.createElement('div');
+    div.className = 'subject-row';
+    const val = (typeof name === 'string') ? name : '';
+    div.innerHTML =
+      '<div class="row-fields">' +
+        '<div style="grid-column: 1 / -1;">' +
+          '<label>Subject Name</label>' +
+          '<input type="text" class="tt-subject-name" placeholder="e.g., Mathematics" value="' + escapeHtml(val) + '" maxlength="60">' +
+        '</div>' +
+        '<button class="btn-danger remove-subject" type="button" style="grid-column: 1 / -1;">Remove</button>' +
+      '</div>';
+    div.querySelector('.remove-subject').addEventListener('click', function () {
+      div.remove();
+    });
+    ttSubjects.appendChild(div);
+  }
+
+  function loadDefaultSubjects() {
+    ttSubjects.innerHTML = '';
+    addTtSubject('Mathematics');
+    addTtSubject('Python');
+    addTtSubject('DBMS');
+  }
+
+  $('addTtSubjectBtn').addEventListener('click', function () { addTtSubject(''); });
+
+  function formatTime(date) {
+    let h = date.getHours();
+    let m = date.getMinutes();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return h + ':' + (m < 10 ? '0' + m : m) + ' ' + ampm;
+  }
+
+  function generateTimetable() {
+    const name = $('ttName').value.trim();
+    const hours = parseFloat($('ttHours').value);
+    const startTimeVal = $('ttStart').value;
+    const breakMin = parseFloat($('ttBreak').value);
+    const result = $('ttResult');
+
+    const subjectInputs = ttSubjects.querySelectorAll('.tt-subject-name');
+    const subjectNames = [];
+    subjectInputs.forEach(function (i) {
+      const v = i.value.trim();
+      if (v) subjectNames.push(v);
+    });
+
+    if (isNaN(hours) || hours <= 0) {
+      showError(result, 'Please enter valid study hours (greater than zero).');
+      return;
+    }
+    if (hours > 12) {
+      showError(result, 'Study hours cannot exceed 12.');
+      return;
+    }
+    if (!startTimeVal) {
+      showError(result, 'Please select a start time.');
+      return;
+    }
+    if (subjectNames.length === 0) {
+      showError(result, 'Please add at least one subject with a name.');
+      return;
+    }
+    if (isNaN(breakMin) || breakMin < 0 || breakMin > 60) {
+      showError(result, 'Break duration must be between 0 and 60 minutes.');
+      return;
     }
 
+    const totalMinutes = Math.floor(hours * 60);
+    const startParts = startTimeVal.split(':');
+    const startH = parseInt(startParts[0], 10);
+    const startM = parseInt(startParts[1], 10);
+    const current = new Date();
+    current.setHours(startH, startM, 0, 0);
 
-    document.getElementById(
-        "calcResult"
-    ).innerHTML =
-        "🧮 Result: <strong>" +
-        result +
-        "</strong>";
+    const numSubjects = subjectNames.length;
+    const breakCount = numSubjects - 1;
+    const totalBreakTime = breakCount * breakMin;
+    const studyTime = totalMinutes - totalBreakTime;
+    if (studyTime <= 0) {
+      showError(result, 'Total break time exceeds available study time. Reduce break or increase hours.');
+      return;
+    }
+    const sessionLength = Math.floor(studyTime / numSubjects);
+    const remainder = studyTime - (sessionLength * numSubjects);
 
-}
+    let html = '';
+    if (name) {
+      html += '<div class="timetable-header">' + escapeHtml(name) + '\'s Study Timetable</div>';
+    } else {
+      html += '<div class="timetable-header">Your Study Timetable</div>';
+    }
 
+    for (let i = 0; i < numSubjects; i++) {
+      const thisLen = sessionLength + (i < remainder ? 1 : 0);
+      const end = new Date(current.getTime() + thisLen * 60000);
+      html +=
+        '<div class="timetable-slot">' +
+          '<div class="slot-time">' + formatTime(current) + ' – ' + formatTime(end) + '</div>' +
+          '<div class="slot-subject">' + escapeHtml(subjectNames[i]) + '</div>' +
+        '</div>';
+      current.setTime(end.getTime());
+      if (i < numSubjects - 1 && breakMin > 0) {
+        const breakEnd = new Date(current.getTime() + breakMin * 60000);
+        html +=
+          '<div class="timetable-slot slot-break">' +
+            '<div class="slot-time">' + formatTime(current) + ' – ' + formatTime(breakEnd) + '</div>' +
+            '<div class="slot-subject">Break</div>' +
+          '</div>';
+        current.setTime(breakEnd.getTime());
+      }
+    }
 
-/* Dark Mode */
+    result.innerHTML = html;
 
-function toggleDark() {
+    try {
+      localStorage.setItem('suh_timetable', JSON.stringify({
+        name: name,
+        hours: hours,
+        startTime: startTimeVal,
+        breakMin: breakMin,
+        subjects: subjectNames,
+        html: html
+      }));
+    } catch (e) {}
+  }
 
-    document
-        .body
-        .classList
-        .toggle("dark");
+  $('generateTtBtn').addEventListener('click', generateTimetable);
 
-}
+  $('resetTtBtn').addEventListener('click', function () {
+    $('ttName').value = '';
+    $('ttHours').value = 3;
+    $('ttStart').value = '18:00';
+    $('ttBreak').value = 10;
+    loadDefaultSubjects();
+    $('ttResult').innerHTML = '';
+    try { localStorage.removeItem('suh_timetable'); } catch (e) {}
+  });
 
+  $('printTtBtn').addEventListener('click', function () { window.print(); });
+
+  // Restore saved timetable
+  try {
+    const savedTt = localStorage.getItem('suh_timetable');
+    if (savedTt) {
+      const data = JSON.parse(savedTt);
+      $('ttName').value = data.name || '';
+      $('ttHours').value = data.hours || 3;
+      $('ttStart').value = data.startTime || '18:00';
+      $('ttBreak').value = (typeof data.breakMin === 'number') ? data.breakMin : 10;
+      ttSubjects.innerHTML = '';
+      const subs = Array.isArray(data.subjects) ? data.subjects : [];
+      if (subs.length > 0) {
+        subs.forEach(function (s) { addTtSubject(s); });
+      } else {
+        loadDefaultSubjects();
+      }
+      if (data.html) $('ttResult').innerHTML = data.html;
+    } else {
+      loadDefaultSubjects();
+    }
+  } catch (e) {
+    loadDefaultSubjects();
+  }
+
+  // ==================== POMODORO ====================
+  const STUDY_SECONDS = 25 * 60;
+  const BREAK_SECONDS = 5 * 60;
+  let pomodoroTime = STUDY_SECONDS;
+  let pomodoroInterval = null;
+  let pomodoroIsStudy = true;
+  let pomodoroRunning = false;
+
+  const pomodoroDisplay = $('pomodoroDisplay');
+  const pomodoroMode = $('pomodoroMode');
+  const pomodoroStartBtn = $('pomodoroStartBtn');
+
+  function formatPomodoro(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+  }
+
+  function updatePomodoroDisplay() {
+    pomodoroDisplay.textContent = formatPomodoro(pomodoroTime);
+    pomodoroMode.textContent = pomodoroIsStudy ? 'Study Time' : 'Break Time';
+  }
+
+  function startPomodoro() {
+    if (pomodoroRunning) return;
+    pomodoroRunning = true;
+    pomodoroStartBtn.textContent = 'Running';
+    pomodoroInterval = setInterval(function () {
+      pomodoroTime--;
+      updatePomodoroDisplay();
+      if (pomodoroTime <= 0) {
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        pomodoroRunning = false;
+        pomodoroStartBtn.textContent = 'Start';
+        if (pomodoroIsStudy) {
+          showNotification('✅ Study session complete! Time for a 5-minute break.');
+        } else {
+          showNotification('✅ Break complete! Ready for the next study session.');
+        }
+        pomodoroIsStudy = !pomodoroIsStudy;
+        pomodoroTime = pomodoroIsStudy ? STUDY_SECONDS : BREAK_SECONDS;
+        updatePomodoroDisplay();
+      }
+    }, 1000);
+  }
+
+  $('pomodoroStartBtn').addEventListener('click', startPomodoro);
+  $('pomodoroPauseBtn').addEventListener('click', function () {
+    if (pomodoroRunning) {
+      clearInterval(pomodoroInterval);
+      pomodoroInterval = null;
+      pomodoroRunning = false;
+      pomodoroStartBtn.textContent = 'Resume';
+    }
+  });
+  $('pomodoroResetBtn').addEventListener('click', function () {
+    if (pomodoroInterval) { clearInterval(pomodoroInterval); pomodoroInterval = null; }
+    pomodoroRunning = false;
+    pomodoroTime = pomodoroIsStudy ? STUDY_SECONDS : BREAK_SECONDS;
+    pomodoroStartBtn.textContent = 'Start';
+    updatePomodoroDisplay();
+  });
+  updatePomodoroDisplay();
+
+  // ==================== CHECKLIST ====================
+  let checklist = [];
+  try { checklist = JSON.parse(localStorage.getItem('suh_checklist') || '[]'); } catch (e) { checklist = []; }
+  if (!Array.isArray(checklist)) checklist = [];
+
+  function saveChecklist() {
+    try { localStorage.setItem('suh_checklist', JSON.stringify(checklist)); } catch (e) {}
+  }
+
+  function renderChecklist() {
+    const list = $('taskList');
+    const progressBox = $('checklistProgress');
+    if (checklist.length === 0) {
+      list.innerHTML = '<div class="empty-state">No tasks yet. Add your first task above.</div>';
+      progressBox.style.display = 'none';
+      return;
+    }
+    let html = '';
+    checklist.forEach(function (task, i) {
+      html +=
+        '<div class="task-item' + (task.done ? ' completed' : '') + '">' +
+          '<input type="checkbox" data-index="' + i + '"' + (task.done ? ' checked' : '') + ' aria-label="Mark task complete">' +
+          '<span class="task-text">' + escapeHtml(task.text) + '</span>' +
+          '<button class="task-delete" data-index="' + i + '" type="button" aria-label="Delete task">×</button>' +
+        '</div>';
+    });
+    list.innerHTML = html;
+
+    list.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+      cb.addEventListener('change', function (e) {
+        const idx = parseInt(e.target.getAttribute('data-index'), 10);
+        checklist[idx].done = e.target.checked;
+        saveChecklist();
+        renderChecklist();
+      });
+    });
+    list.querySelectorAll('.task-delete').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        const idx = parseInt(e.target.getAttribute('data-index'), 10);
+        checklist.splice(idx, 1);
+        saveChecklist();
+        renderChecklist();
+      });
+    });
+
+    const completed = checklist.filter(function (t) { return t.done; }).length;
+    const pct = Math.round((completed / checklist.length) * 100);
+    progressBox.style.display = 'block';
+    $('progressValue').textContent = pct + '%';
+    $('progressFill').style.width = pct + '%';
+  }
+
+  $('addTaskBtn').addEventListener('click', function () {
+    const input = $('taskInput');
+    const text = input.value.trim();
+    if (!text) return;
+    checklist.push({ text: text, done: false });
+    input.value = '';
+    saveChecklist();
+    renderChecklist();
+  });
+  $('taskInput').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      $('addTaskBtn').click();
+    }
+  });
+  renderChecklist();
+
+  // ==================== EXPENSE TRACKER ====================
+  let expenses = [];
+  try { expenses = JSON.parse(localStorage.getItem('suh_expenses') || '[]'); } catch (e) { expenses = []; }
+  if (!Array.isArray(expenses)) expenses = [];
+
+  function saveExpenses() {
+    try { localStorage.setItem('suh_expenses', JSON.stringify(expenses)); } catch (e) {}
+  }
+
+  function renderExpenses() {
+    const list = $('expenseList');
+    const summary = $('expenseSummary');
+    if (expenses.length === 0) {
+      list.innerHTML = '';
+      summary.innerHTML = '';
+      return;
+    }
+    let html = '';
+    expenses.forEach(function (e, i) {
+      html +=
+        '<div class="expense-item">' +
+          '<div class="expense-info">' +
+            '<div class="expense-name">' + escapeHtml(e.name) + '</div>' +
+            '<div class="expense-meta">' + escapeHtml(e.category) + '</div>' +
+          '</div>' +
+          '<div class="expense-amount">$' + parseFloat(e.amount).toFixed(2) + '</div>' +
+          '<button class="task-delete" data-index="' + i + '" type="button" aria-label="Delete expense">×</button>' +
+        '</div>';
+    });
+    list.innerHTML = html;
+    list.querySelectorAll('.task-delete').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        const idx = parseInt(e.target.getAttribute('data-index'), 10);
+        expenses.splice(idx, 1);
+        saveExpenses();
+        renderExpenses();
+      });
+    });
+
+    const total = expenses.reduce(function (s, e) { return s + parseFloat(e.amount); }, 0);
+    const cats = {};
+    expenses.forEach(function (e) {
+      cats[e.category] = (cats[e.category] || 0) + parseFloat(e.amount);
+    });
+
+    let summaryHtml =
+      '<div class="result">' +
+        '<div class="result-label">Total Expenses</div>' +
+        '<div class="result-value">$' + total.toFixed(2) + '</div>' +
+      '</div>';
+
+    const catKeys = Object.keys(cats);
+    if (catKeys.length > 0) {
+      summaryHtml += '<div style="margin-top: 14px;"><div style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">By Category</div>';
+      catKeys.forEach(function (cat) {
+        summaryHtml +=
+          '<div class="category-row">' +
+            '<span class="category-name">' + escapeHtml(cat) + '</span>' +
+            '<span class="category-amount">$' + cats[cat].toFixed(2) + '</span>' +
+          '</div>';
+      });
+      summaryHtml += '</div>';
+    }
+    summary.innerHTML = summaryHtml;
+  }
+
+  $('addExpenseBtn').addEventListener('click', function () {
+    const name = $('expenseName').value.trim();
+    const amount = parseFloat($('expenseAmount').value);
+    const category = $('expenseCategory').value;
+    if (!name) {
+      showNotification('⚠️ Please enter an expense name.');
+      return;
+    }
+    if (isNaN(amount) || amount < 0) {
+      showNotification('⚠️ Please enter a valid amount.');
+      return;
+    }
+    expenses.push({ name: name, amount: amount, category: category });
+    $('expenseName').value = '';
+    $('expenseAmount').value = '';
+    saveExpenses();
+    renderExpenses();
+  });
+  renderExpenses();
+
+})();
 </script>
-
 </body>
 </html>
